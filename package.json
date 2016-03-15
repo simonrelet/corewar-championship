@@ -1,0 +1,14 @@
+{
+  "name": "corewar-championship",
+  "version": "0.1.0",
+  "description": "The corewar championship",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Simon Relet",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4"
+  }
+}
