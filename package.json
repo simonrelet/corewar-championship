@@ -1,9 +1,13 @@
 {
   "name": "corewar-championship",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The corewar championship",
-  "main": "index.js",
+  "main": "corewar-championship.js",
   "scripts": {
+    "clean": "rm -fr logs",
+    "dist-clean": "npm run clean node_modules",
+    "start": "mkdir -p logs && forever start -p logs/ -l forever.log -a -o logs/out.log -e logs/err.log corewar-championship.js",
+    "stop": "forever stop corewar-championship.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Simon Relet",
