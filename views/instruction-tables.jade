@@ -1,0 +1,24 @@
+extends ./layout
+
+append styles
+  link(href='/stylesheets/layouts.css', rel='stylesheet')
+  link(href='/stylesheets/elements.css', rel='stylesheet')
+  link(href='/stylesheets/instruction-tables.css', rel='stylesheet')
+  
+block content
+  .layout.vertical.box
+    h1= params.current.capitalizedName + ' Instructions Delays'
+    .layout.horizontal.reverse
+      a(href=params.sibling.link)= 'Go to ' + params.sibling.name + ' delays'
+    .scrollable
+      table
+        tr.mode
+          td.top-corner
+          each mode in params.instructions.modes
+            th.mode= mode
+
+        each instruction in params.instructions.instructions
+          tr
+            th.instruction= instruction.name
+            each mode, index in params.instructions.modes
+               td= instruction[params.current.name][index]

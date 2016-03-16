@@ -2,16 +2,32 @@
 
 const express = require('express');
 const router = express.Router();
+const _ = require('lodash');
 const instructions = require('../db/instructions.json');
+const VERSION = require('../package.json').version;
 
-const VIEWS_ROOT = 'instruction-tables';
-
-let getData = (req, title) => {
+let getData = (req, current, sibling) => {
+  console.log(`VERSION=${VERSION}`);
+  let currentCapitalized = _.capitalize(current);
   return {
-    title: `${title} Delay`,
-    baseUrl: req.baseUrl,
-    instructions: instructions
+    page: `${currentCapitalized} Delays`,
+    version: VERSION,
+    params: {
+      current: {
+        name: current,
+        capitalizedName: currentCapitalized
+      },
+      sibling: {
+        link: `${req.baseUrl}/${sibling}`,
+        name: sibling
+      },
+      instructions: instructions
+    }
   };
+};
+
+let renderTable = (req, res, current, sibling) => {
+  res.render(`instruction-tables`, getData(req, current, sibling));
 };
 
 router.get('/', (req, res) => {
@@ -19,11 +35,11 @@ router.get('/', (req, res) => {
 });
 
 router.get('/decode', (req, res) => {
-  res.render(`${VIEWS_ROOT}/decode-table`, getData(req, 'Decode'));
+  renderTable(req, res, 'decode', 'execute');
 });
 
 router.get('/execute', (req, res) => {
-  res.render(`${VIEWS_ROOT}/execute-table`, getData(req, 'Execute'));
+  renderTable(req, res, 'execute', 'decode');
 });
 
 module.exports = router;

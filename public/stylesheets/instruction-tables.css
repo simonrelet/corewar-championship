@@ -1,0 +1,41 @@
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 10px;
+  text-align: center;
+}
+
+table td:not(.top-corner),
+table th {
+  border-width: 0px 1px 0px 1px;
+  border-color: #ccc;
+  border-style: solid;
+}
+
+table th {
+  font-weight: normal;
+}
+
+table th.mode {
+  padding: 10px 7px;
+}
+
+table th.instruction {
+  border-width: 0px 1px 0px 0px;
+  padding: 1px 7px;
+  font-family: 'Monaco';
+  font-size: 11px;
+}
+
+table td {
+  font-size: 12px;
+}
+
+table tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+table tr:hover:not(.mode) {
+  background-color: #1976d2;
+  color: white;
+}
