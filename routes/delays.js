@@ -7,7 +7,6 @@ const instructions = require('../db/instructions.json');
 const VERSION = require('../package.json').version;
 
 let getData = (req, current, sibling) => {
-  console.log(`VERSION=${VERSION}`);
   let currentCapitalized = _.capitalize(current);
   return {
     page: `${currentCapitalized} Delays`,
