@@ -1,0 +1,13 @@
+extends ./_svg.jade
+
+block content
+  g(transform='translate(5, 5)')
+    g(fill= color1)
+      rect(x='-1' y='-1' height='7' width='17')
+      rect(x='-1' y='-1' height='27' width='7')
+      rect(x='-1' y='19' height='7' width='17')
+    g(fill= color2)
+      rect(x='9' y='9' height='10' width='7')
+      polygon(points='9,19 16,19 16,26')
+      rect(x='16' y='19' height='7' width='10')
+      rect(x='19' y='-1' height='27' width='7')

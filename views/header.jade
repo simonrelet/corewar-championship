@@ -1,0 +1,11 @@
+#header
+  .content
+    a(href='/', onmouseover='imgHover(this, \'/images/logo.svg\')', onmouseout='imgHover(this, \'/images/logo_grey.svg\')')
+      img(src='/images/logo_grey.svg')
+    .layout.horizontal.reverse
+      a(href='/delays', class= page === 'delays' ? 'active' : '')
+        span= 'Delays Tables'
+      a(href='/leaderboard', class= page === 'leaderboard' ? 'active' : '')
+        span= 'Leaderboard'
+      a(href='/instruction-set', class= page === 'instruction-set' ? 'active' : '')
+        span= 'Instruction Set'

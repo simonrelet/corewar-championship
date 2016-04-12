@@ -1,0 +1,20 @@
+@import '_constants.scss';
+
+.margin-block {
+  margin: 1em 0 16px 0;
+}
+
+.margin-text {
+  margin: 0 0 16px 0;
+}
+
+.code-block {
+  background-color: $block-background;
+  border-radius: 3px;
+}
+
+.title {
+  @extend .margin-block;
+  padding-bottom: 0.3em;
+  border-bottom: $border;
+}

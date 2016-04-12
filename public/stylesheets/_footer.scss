@@ -1,0 +1,10 @@
+@import '_constants.scss';
+
+#footer {
+  text-align: center;
+  font-size: small;
+  padding: 20px 20px 40px 20px;
+  color: $header-link-color;
+  border-top: $block-border;
+  background-color: $block-background;
+}

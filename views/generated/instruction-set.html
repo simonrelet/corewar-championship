@@ -1,0 +1,327 @@
+<h1 id="the-instruction-set">The Instruction Set</h1>
+<p>In the bellow descriptions, <code>rx</code> and <code>ry</code> refers to any register.
+The &#39;Encoding&#39; represent the instruction in the core format.</p>
+<h2 id="logical-instructions">Logical Instructions</h2>
+<h3 id="and">AND</h3>
+<p>Syntax: <code>and rx, ry</code>. Flags update: <code>Z</code>, <code>S</code>. Encoding: <code>2xy</code></p>
+<p>Computes the bitwise logical AND between <code>rx</code> and <code>ry</code>, and stores the result
+in <code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>ll  r1, 0x83cb
+ll  r2, 0x7ac3
+and r1, r2      # r1: 0x02c3
+</code></pre><h3 id="or">OR</h3>
+<p>Syntax: <code>or rx, ry</code>. Flags update: <code>Z</code>, <code>S</code>, Encoding: <code>3xy</code></p>
+<p>Computes the bitwise logical OR between <code>rx</code> and <code>ry</code>, and stores the result in
+<code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>ll r1, 0x83cb
+ll r2, 0x7ac3
+or r1, r2      # r1: 0xfbcb
+</code></pre><h3 id="xor">XOR</h3>
+<p>Syntax: <code>xor rx, ry</code>. Flags update: <code>Z</code>, <code>S</code>. Encoding: <code>4xy</code></p>
+<p>Computes the bitwise exclusive OR between <code>rx</code> and <code>ry</code>, and stores the result
+in <code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>ll  r1, 0x83cb
+ll  r2, 0x7ac3
+xor r1, r2      # r1: 0xf908
+</code></pre><h3 id="not">NOT</h3>
+<p>Syntax: <code>not rx, ry</code>. Flags update: <code>Z</code>, <code>S</code>. Encoding: <code>5xy</code></p>
+<p>Computes the binary negation of <code>ry</code>, and stores the result in <code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>ll  r2, 0x7ac3
+not r1, r2      # r1: 0x853c
+</code></pre><h3 id="rol-rotation-left-">ROL (ROtation Left)</h3>
+<p>Syntax: <code>rol rx, n</code>. Flags update: <code>Z</code>, <code>S</code>. Encoding: <code>6xn</code></p>
+<p>Does a left rotation of <code>n</code> bits on the <code>rx</code> register. Bits that exit on the
+left enter on the right.</p>
+<p><code>n</code> is unsigned and encoded on 1q, which means that 0x1234 will be truncated to
+0x4.</p>
+<p>Examples:</p>
+<pre><code>ll  r1, 0x83cb
+rol r1, 3       # r1: 0x1e5c
+ll  r1, 0x83cb
+rol r1, 0xf143  # Same result
+</code></pre><h2 id="arithmetic-instructions">Arithmetic Instructions</h2>
+<h3 id="asr-arithmetic-shift-right-">ASR (Arithmetic Shift Right)</h3>
+<p>Syntax: <code>asr rx, n</code>. Flags Update: <code>Z</code>, <code>S</code>. Encoding: <code>7xn</code></p>
+<p>Does an arithmetic shift of <code>n</code> bits to the right on the <code>rx</code> register:
+entering bits are equal to the sign bit.</p>
+<p><code>n</code> is unsigned and encoded on 1q, which means that 0x1234 will be truncated to
+0x4.</p>
+<p>Examples:</p>
+<pre><code>ll  r1, 0x3333
+asr r1, 2       # r1: 0x0ccc
+ll  r1, 0xcccc
+asr r1, 2       # r1: 0xf333
+ll  r1, 0xcccc
+asr r1, 0xa2    # Same result
+</code></pre><h3 id="add">ADD</h3>
+<p>Syntax: <code>add rx, ry</code>. Flags Update: <code>Z</code>, <code>S</code>. Encoding: <code>8xy</code></p>
+<p>Adds <code>ry</code>&#39;s content to <code>rx</code>&#39;s, and stores the result in <code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>ll  r1, 1
+ll  r2, -2
+add r1, r2  # r1: -1 (0xffff)
+</code></pre><h3 id="sub">SUB</h3>
+<p>Syntax: <code>sub rx, ry</code>. Flags Update: <code>Z</code>, <code>S</code>. Encoding: <code>9xy</code></p>
+<p>Subtracts <code>ry</code>&#39;s content from <code>rx</code>&#39;s, and stores the result in <code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>ll  r1, 1
+ll  r2, 2
+sub r1, r2  # r1: -1 (0xffff)
+</code></pre><h3 id="cmp-compare-">CMP (CoMPare)</h3>
+<p>Syntax: <code>cmp rx, ry</code>. Flags Update: <code>Z</code>, <code>S</code>. Encoding: <code>axy</code></p>
+<p>Subtracts <code>ry</code>&#39;s content from <code>rx</code>&#39;s, but doesn&#39;t store the result.</p>
+<p>Example:</p>
+<pre><code>ll  r1, 1
+ll  r2, 2
+cmp r1, r2  # r1: 1 (0x0001)
+</code></pre><h3 id="addi-add-integer-">ADDI (Add Integer)</h3>
+<p>Syntax: <code>addi rx, n</code>. Flags Update: <code>Z</code>, <code>S</code>. Encoding: <code>f5xn</code></p>
+<p>Adds the signed constant <code>n</code> to the <code>rx</code> register, and stores the result in
+<code>rx</code>.</p>
+<p><code>n</code> is encoded on 1q, which means that 0x1234 will be truncated to 0x4.</p>
+<p>Examples:</p>
+<pre><code>lc   r1, 1
+addi r1, 0xf     # r1: 0
+lc   r1, 2
+addi r1, 0xff00  # r1: 2
+</code></pre><h3 id="cmpi-compare-to-integer-">CMPI (CoMPare to Integer)</h3>
+<p>Syntax: <code>cmpi rx, n</code>. Flags Update: <code>Z</code>, <code>S</code>. Encoding: <code>f6xn</code></p>
+<p>Subtracts the signed constant <code>n</code> from <code>rx</code>, but doesn&#39;t store the result.</p>
+<p><code>n</code> is encoded on 1q, which means that 0x1234 will be truncated to 0x4.</p>
+<p>Example:</p>
+<pre><code>lc   r1, 1
+cmpi r1, 1  # r1: 1
+</code></pre><h3 id="neg-negate-">NEG (NEGate)</h3>
+<p>Syntax: <code>neg rx, ry</code>. Flags Update: <code>Z</code>, <code>S</code>. Encoding: <code>bxy</code></p>
+<p>Stores the opposite of <code>ry</code> in <code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>lc  r2, 1
+neg r1, r2  # r1: -1 (0xffff)
+</code></pre><h2 id="data-move-instructions">Data move Instructions</h2>
+<h3 id="mov-move-">MOV (MOVe)</h3>
+<p>Syntax: <code>mov rx, ry</code>. Flags Update: None. Encoding: <code>cxy</code></p>
+<p>Copies the content of <code>ry</code> to <code>rx</code>.</p>
+<p>Example:</p>
+<pre><code>ll  r1, 0xcafe
+mov r2, r1      # r2: 0xcafe
+</code></pre><h3 id="swp-swap-">SWP (SWaP)</h3>
+<p>Syntax: <code>swp rx, ry</code>. Flags Update: None. Encoding: <code>f4xy</code></p>
+<p>Swaps the content of the <code>rx</code> and <code>ry</code> registers.</p>
+<p>Example:</p>
+<pre><code>ll r1, 2097
+ll r2, 6100
+swp r1, r2   # r1: 6100, r2: 2097
+</code></pre><h3 id="lc-load-constant-">LC (Load Constant)</h3>
+<p>Syntax: <code>lc rx, n</code>. Flags Update: None. Encoding: <code>f2xnn</code></p>
+<p>Loads <code>n</code> in <code>rx</code>&#39;s two least significant nibbles and propagates the sign bit
+to <code>rx</code>&#39;s two most significant nibbles.</p>
+<p><code>n</code> is encoded on 2q, which means that 0x1234 will be truncated to 0x34.</p>
+<p>Examples:</p>
+<pre><code>lc r1, 10      # r1: 10 (0x000a)
+lc r2, -10     # r2: -10 (0xfff6)
+lc r3, 0x00f6  # r3: -10 (0xfff6)
+</code></pre><h3 id="ll-load-long-constant-">LL (Load Long Constant)</h3>
+<p>Syntax: <code>ll rx, n</code>. Flags Update: None. Encoding: <code>f3xnnnn</code></p>
+<p>Loads <code>n</code> in the <code>rx</code> register. <code>n</code> is encoded on 4q.</p>
+<p>Examples:</p>
+<pre><code>ll r1, 10      # r1: 10 (0x000a)
+ll r2, -10     # r2: -10 (0xfff6)
+ll r3, 0x00f6  # r3: 0x00f6
+</code></pre><h2 id="memory-instructions">Memory Instructions</h2>
+<p>In order to simplify the notation, the expression <code>rx % IDX</code> will designate the
+special modulo used by the Stadium to access the memory. This is <em>NOT</em> the
+usual arithmetic modulo.</p>
+<h3 id="ldr-load-register-">LDR (LoaD Register)</h3>
+<p>Syntax: <code>ldr rx, [ry]</code>. Flags Update: None. Encoding: <code>dxy</code></p>
+<p>Loads the 4q stored at the address <code>PC + (ry % IDX)</code> in <code>rx</code>.</p>
+<p><code>ry</code>&#39;s value is signed.</p>
+<p>Example:</p>
+<pre><code>ll  r0, 20
+ldr r1, [r0]  # Reads r1&#39;s content from PC + (20 % IDX)
+</code></pre><h3 id="str-store-register-">STR (STore Register)</h3>
+<p>Syntax: <code>str [rx], ry</code>. Flags Update: None. Encoding: <code>exy</code></p>
+<p>Stores the 4q of <code>ry</code> at the address <code>PC + (rx % IDX)</code>.</p>
+<p><code>rx</code>&#39;s value is signed.</p>
+<p>Example:</p>
+<pre><code>ll  r0, 20
+ll  r1, 0x1234
+str [r0], r1    # Writes r1&#39;s content at PC + (20 % IDX)
+</code></pre><h3 id="ldb-load-buffer-">LDB (LoaD Buffer)</h3>
+<p>Syntax: <code>ldb [rx], n, m</code>. Flags Update: None. Encoding: <code>f0xnnmm</code></p>
+<p>Reads, starting at address <code>PC + (rx % IDX)</code>, the first <code>m</code> quartets and stores
+them starting at the offset <code>n</code> in the buffer. As the buffer is circular, if
+<code>m</code> is greater than the distance between the offset <code>n</code> and the end of the
+buffer, overflowing nibbles will be written at the beginning of the buffer.</p>
+<p><code>m</code> and <code>n</code> are unsigned, <code>rx</code>&#39;s content is signed.</p>
+<p>Example:</p>
+<pre><code>ll  r0, 42
+ldb [r0], 0, 32  # Writes at the begining of the buffer the 32
+                 # first nibbles starting at PC + (42 % IDX)
+</code></pre><h3 id="stb-store-buffer-">STB (STore Buffer)</h3>
+<p>Syntax: <code>stb [rx], n, m</code>. Flags Update: None. Encoding: <code>f1xnnmm</code></p>
+<p>Writes, starting at address <code>PC + (rx % IDX)</code>, <code>m</code> quartets of the buffer
+starting at offset <code>n</code>. As the buffer is circular, if <code>m</code> is greater than the
+distance between the offset <code>n</code> and the end of the buffer, the overflowing
+nibbles will be read from the beginning of the buffer.</p>
+<p><code>m</code> and <code>n</code> are unsigned, <code>rx</code>&#39;s content is signed.</p>
+<p>Example:</p>
+<pre><code>ll  r0, 42
+stb [r0], 0, 32  # Writes the first 32q of the buffer at
+                 # PC + (42 % IDX)
+</code></pre><h2 id="branch-instructions">Branch Instructions</h2>
+<h3 id="b-branch-">B (Branch)</h3>
+<p>Syntax: <code>b rx</code>. Flags Update: None. Encoding: <code>f7x</code></p>
+<p>Does an systematic jump of <code>rx</code> nibbles (<code>PC = PC + (rx % IDX)</code>).</p>
+<p><code>rx</code>&#39;s content is signed.</p>
+<p>Example:</p>
+<pre><code>ll r0, 40
+b  r0      # Jumps to PC + (40 % IDX)
+</code></pre><h3 id="bz-branch-if-zero-flag-">BZ (Branch if Zero flag)</h3>
+<p>Syntax: <code>bz rx</code>. Flags Update: None. Encoding: <code>f8x</code></p>
+<p>Does a jump of <code>rx</code> nibbles if the flag <code>Z</code> is set (<code>PC = PC + (rx % IDX)</code>).</p>
+<p><code>rx</code>&#39;s conent is signed.</p>
+<p>Example:</p>
+<pre><code>ll  r0, 40
+add r1, r1  # Sets the Z flag, by default registers are at 0x0000
+bz  r0      # Jumps to PC + (40 % IDX)
+</code></pre><h3 id="bnz-branch-if-not-zero-flag-">BNZ (Branch if Not Zero flag)</h3>
+<p>Syntax: <code>bnz rx</code>. Flags Update: None. Encoding: <code>f9x</code></p>
+<p>Does a jump of <code>rx</code> nibbles if the flag <code>Z</code> is not set
+(<code>PC = PC + (rx % IDX)</code>).</p>
+<p><code>rx</code>&#39;s content is signed.</p>
+<p>Example:</p>
+<pre><code>ll   r0, 40
+addi r1, 1  # Unsets the Z flag
+bnz  r0     # Jumps to PC + (40 % IDX)
+</code></pre><h3 id="bs-branch-if-sign-flag-">BS (Branch if Sign flag)</h3>
+<p>Syntax: <code>bs rx</code>. Flags Update: None. Encoding: <code>fax</code></p>
+<p>Does a jump of <code>rx</code> nibbles if the flag <code>S</code> is set (<code>PC = PC + (rx % IDX)</code>).</p>
+<p><code>rx</code>&#39;s content is signed.</p>
+<p>Example:</p>
+<pre><code>ll   r0, 40
+addi r1, -1  # Sets the S flag
+bs   r0      # Jumps to PC + (40 % IDX)
+</code></pre><h2 id="system-instructions">System Instructions</h2>
+<h3 id="crash">CRASH</h3>
+<p>Syntax: <code>crash</code>. Flags Update: None. Encoding: <code>0</code></p>
+<p>If a processor executes this instruction, it is instantly destroyed (but we
+don&#39;t really care, do we?). Consecutive <code>crash</code>s can be written on the same line.</p>
+<p>Examples:</p>
+<pre><code>crash              # Bang! You&#39;re dead.
+crash crash crash  # Still dead.
+</code></pre><h3 id="nop">NOP</h3>
+<p>Syntax: <code>nop</code>. Flags Update: None. Encoding: <code>1</code></p>
+<p>No effect, very useful. Consecutive <code>nop</code>s can be written on the same line.</p>
+<p>Example:</p>
+<pre><code>nop nop nop nop nop  # Well, you got the idea.
+</code></pre><h3 id="write">WRITE</h3>
+<p>Syntax: <code>write rx</code>. Flags Update: None. Encoding: <code>ffx</code></p>
+<p>Displays <code>rx</code>&#39;s content on the standard output stream.</p>
+<h3 id="stat">STAT</h3>
+<p>Syntax: <code>stat rx, n</code>. Flags Update: None. Encoding: <code>fbxn</code></p>
+<p>Loads the Stadium&#39;s statistics in <code>rx</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>Effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>stat rx, 0</code></td>
+<td>sets to 0</td>
+</tr>
+<tr>
+<td><code>stat rx, 1</code></td>
+<td>loads the Stadium&#39;s mode</td>
+</tr>
+<tr>
+<td><code>stat rx, 2</code></td>
+<td>loads <code>PC</code></td>
+</tr>
+<tr>
+<td><code>stat rx, 3</code></td>
+<td>loads <code>W&#39;O&quot;</code></td>
+</tr>
+<tr>
+<td><code>stat rx, 4</code></td>
+<td>loads the number of validated checkpoints since the beginning of the race</td>
+</tr>
+<tr>
+<td><code>stat rx, 5</code></td>
+<td>loads the start address of the ship</td>
+</tr>
+<tr>
+<td><code>stat rx, 6</code></td>
+<td>loads the track size (in q)</td>
+</tr>
+<tr>
+<td><code>stat rx, 7</code></td>
+<td>loads the number of laps to complete</td>
+</tr>
+<tr>
+<td><code>stat rx, 8</code></td>
+<td>loads the number of checkpoints per lap</td>
+</tr>
+<tr>
+<td><code>stat rx, 9</code></td>
+<td>loads the size of a checkzone (in q)</td>
+</tr>
+<tr>
+<td><code>stat rx, 10</code></td>
+<td>loads the maximum number of cycles to validate a checkpoint</td>
+</tr>
+<tr>
+<td><code>stat rx, 11</code></td>
+<td>loads the remaining number of cycles to validate a checkpoint before the ship is destroyed</td>
+</tr>
+<tr>
+<td><code>stat rx, 12</code></td>
+<td>loads the ship&#39;s position in the race (1 if it&#39;s first, 2 if it&#39;s second etc.)</td>
+</tr>
+<tr>
+<td><code>stat rx, 13</code></td>
+<td>loads the distance between the ship and the closest locked ship</td>
+</tr>
+<tr>
+<td><code>stat rx, 14</code></td>
+<td>loads the locked ship&#39;s mode</td>
+</tr>
+<tr>
+<td><code>stat rx, 15</code></td>
+<td>copies the content of <code>Z</code> in the bit 0 (least significant bit), and copies the content of <code>S</code> in the bit 1</td>
+</tr>
+</tbody>
+</table>
+<h3 id="check">CHECK</h3>
+<p>Syntax: <code>check</code>. Flags Update: <code>Z</code>. Encoding: <code>fc</code></p>
+<p>Tries to validate a checkzone. If the check succeeds, <code>Z</code> is set.</p>
+<h3 id="mode">MODE</h3>
+<p>Syntax: <code>mode m</code>. Flags Update: None. Encoding: <code>fdm</code></p>
+<p>Changes the current mode. <code>m</code> can either be the name of the mode (case
+insensitive) or the mode numeric value. Valid modes are: </p>
+<ul>
+<li>0: <code>feisar</code></li>
+<li>1: <code>goteki45</code></li>
+<li>2: <code>agsystems</code></li>
+<li>3: <code>auricom</code></li>
+<li>4: <code>assegai</code></li>
+<li>5: <code>piranha</code></li>
+<li>6: <code>qirex</code></li>
+<li>7: <code>icaras</code></li>
+<li>8: <code>rocket</code></li>
+<li>9: <code>missile</code></li>
+<li>10: <code>mines</code></li>
+<li>11: <code>plasma</code></li>
+<li>12: <code>miniplasma</code></li>
+</ul>
+<p>If <code>m</code> is bigger than 12, the mode doesn&#39;t change.</p>
+<h3 id="fork">FORK</h3>
+<p>Syntax: <code>fork</code>. Flags Update: <code>Z</code>. Encoding: <code>fe</code></p>
+<p>Duplicates the ship. The only differences between the 2 ships is the <code>Z</code> flag:
+The new ship&#39;s <code>Z</code> flag is set and the original ship&#39;s <code>Z</code> flag is not set.</p>

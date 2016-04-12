@@ -2,19 +2,18 @@
 
 const express = require('express');
 const router = express.Router();
-const _ = require('lodash');
 const instructions = require('../db/instructions.json');
-const VERSION = require('../package.json').version;
+const utilities = require('../app/utilities');
+const constants = require('../app/constants');
 
 let getData = (req, current, sibling) => {
-  let currentCapitalized = _.capitalize(current);
-  return {
-    page: `${currentCapitalized} Delays`,
-    version: VERSION,
+  return utilities.createViewData({
+    pageTitle: constants.pages.delays[current].name,
+    page: 'delays',
     params: {
       current: {
         name: current,
-        capitalizedName: currentCapitalized
+        capitalizedName: constants.pages.delays[current].name
       },
       sibling: {
         link: `${req.baseUrl}/${sibling}`,
@@ -22,7 +21,7 @@ let getData = (req, current, sibling) => {
       },
       instructions: instructions
     }
-  };
+  });
 };
 
 let renderTable = (req, res, current, sibling) => {
@@ -30,7 +29,7 @@ let renderTable = (req, res, current, sibling) => {
 };
 
 router.get('/', (req, res) => {
-  res.redirect('decode');
+  res.redirect(`${req.baseUrl}/decode`);
 });
 
 router.get('/decode', (req, res) => {

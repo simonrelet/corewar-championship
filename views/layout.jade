@@ -1,10 +1,15 @@
 doctype html
 html
   head
-    title Corewar Championship - #{page}
+    title Corewar Championship - #{pageTitle}
     link(href='/stylesheets/styles.css', rel='stylesheet')
     block styles
+    script(type='text/javascript').
+      function imgHover(element, path) {
+        element.getElementsByTagName('img')[0].setAttribute('src', path);
+      }
   body
-    #page-content
+    include ./header.jade
+    .content.white
       block content
-    #footer Corewar Championship - v#{version}
+    include ./footer.jade

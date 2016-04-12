@@ -1,0 +1,480 @@
+<h1 id="the-corewar-championship">The Corewar Championship</h1>
+<p>The Pit is the assembler program of the Corewar Championship, it will transform
+your assembly ship into a core ship. This is the first step to becoming a
+legend.</p>
+<p>One can feel strong enough to write a ship directly in the core format, but
+for the others you should write it in the assembly language described here and
+use the Pit to create the core ship.</p>
+<h2 id="the-assembly-syntax">The Assembly Syntax</h2>
+<h3 id="the-basics">The Basics</h3>
+<p>To be valid, an assembly ship must:</p>
+<ul>
+<li>Have a name and contains at least one instruction;</li>
+<li>Only have one instruction, label or guildeline per line.</li>
+</ul>
+<h4 id="line-comments">Line Comments</h4>
+<p>Line comments are characters ignored by the Pit and will therfore not be
+visible in the core ship. They start at the first <code>#</code> character and will end
+at the first line ending or at the end of the file.</p>
+<p>For example:</p>
+<pre><code>mov r4, r6  # It&#39;s gonna rock!
+</code></pre><h4 id="instruction">Instruction</h4>
+<p>An instruction is composed of an opcode followed by arguments. The arguments
+are separated by commas (<code>,</code>).</p>
+<p>For example:</p>
+<pre><code>mov r4, r15    # Opcode &#39;move&#39; with arguments &#39;r4&#39; and &#39;r15&#39;
+mov r4 r15     # Syntax error
+mov, r4, r15   # Syntax error
+mov r4, , r15  # Syntax error
+</code></pre><h4 id="the-nibble-smalest-memory-unit">The Nibble: Smalest Memory Unit</h4>
+<p>Through the Corewar Championship the smalest memory unit used is the nibble
+(&#39;q&#39;, also know as a quartet). It has a length of 4 bits (half-byte) and can be
+represented by a single hexadecimal character. Each address corresponds to a
+single nibble.</p>
+<p>So <code>0xf</code> is a nibble, and &#39;4q&#39; means &#39;4 nibbles&#39;.</p>
+<h4 id="the-pc-and-w-o-">The PC and W&#39;O&quot;</h4>
+<p>The PC is the program counter of the ship, it&#39;s value can increase or decrease
+depending on the jumps and will always be in the range [0, 65 535].</p>
+<p>The W&#39;O&quot; is the distance counter, it can only increase. This value represent
+the distance traveled since the start of the race.</p>
+<h4 id="the-registers">The Registers</h4>
+<p>Any ship has access to 16 registers of 4q. The first register is <code>r0</code> and the
+last <code>r15</code>.</p>
+<p>By default they are all set to zero.</p>
+<h4 id="the-buffer">The Buffer</h4>
+<p>A buffer is availble to any ship to store up to 64q. There are only 2
+instructions to access it: <code>ldb</code> and <code>stb</code>. The buffer is circular, so writing
+or reading past the end, will loop back to the start of the buffer. </p>
+<p>By default the buffer is set to zero.</p>
+<h4 id="the-flags">The Flags</h4>
+<p>There are 2 flags (<code>Z</code> and <code>S</code>) of 1 bit which cannot be set directly. Some
+instructions can updates theses flags depending on the result (<code>add</code> for
+example) and others can test them (<code>bnz</code> for example).</p>
+<p>The <code>Z</code> flag is set to <code>1</code> or <code>0</code> to notify whether the result is equals to <code>0</code>
+or not, respectively.</p>
+<p>The <code>S</code> flag is set to <code>1</code> or <code>0</code> to notify whether the result is strictly
+negative or not, respectively.</p>
+<p>By default <code>Z</code> and <code>S</code> are not set (<code>0</code>).</p>
+<h4 id="the-ship-modes">The Ship Modes</h4>
+<p>The ship mode is used by the Stadium to perform some optimisations. Depending
+on it, some instructions will decode and/or execute faster while others can be
+slower. It can be changed using the <code>mode</code> instruction.</p>
+<p>Choose wisely the mode(s) of your ship.</p>
+<h4 id="the-modes-visibility-idx">The Modes Visibility: IDX</h4>
+<p>A ship&#39;s visibility isn&#39;t absolute, it cannot see everything on the track.
+The current mode of the ship defines the visibility it has: the IDX.</p>
+<p>The follwing rules are applies for read, write and jumps:</p>
+<ul>
+<li>The lowest accessible address is PC - IDX;</li>
+<li>The highest accessible address is PC + IDX - 1;</li>
+<li>The accessible range is circular and 2 * IDX wide.</li>
+</ul>
+<p>For example a ship in a mode with an IDX: 10 and a PC: 30 can read, write or
+jump in the range [20, 39], which makes 20 possible addresses. This range is a
+circular subset of the track which means that if the ships try to jumps with an
+offset of 10 (to address 40) it will end up at address 20.</p>
+<h4 id="the-constants">The Constants</h4>
+<p>Some instructions take constants as arguments, it&#39;s size (the number of
+nibbles) and whether it is signed or unsigned (positive, negative) is defined
+by the instruction.</p>
+<p>A constant can be in decimal or in hexadecimal but then must be preceed by
+<code>0x</code>.</p>
+<p>For example:</p>
+<pre><code>ll r1, 1234
+ll r1, 0xCaFe  # No case sensitivity.
+ll r1, 1fff    # Syntax error
+ll r1, 000042  # Just 42
+ll r1, -1      # Still working
+</code></pre><h4 id="the-labels">The labels</h4>
+<p>A label is an identifier whose value is the address of it&#39;s definition and can
+be used as constants in any expressions. In the assembly file a label can be
+referenced at any line, it doesn&#39;t have to be after it&#39;s definition.</p>
+<p>The Pit will replace every use of a label by it&#39;s value before any expression
+evaluation. There are only here to help writting and reading an assembly ship,
+they were not be visible in the core ship.</p>
+<p>A label must:</p>
+<ul>
+<li>Start with a letter, can contains letters, numbers, or <code>_</code> and must finish
+with a letter or a number;</li>
+<li>Be defined only once.</li>
+</ul>
+<p>By the way, the first instruction of the assembly file is at address <code>0x0</code>.</p>
+<p>Value examples:</p>
+<pre><code>foo:            # &#39;foo&#39; equals to 0x0
+    mov r0, r1
+bar:            # &#39;bar&#39; equals to 0x3,
+                # because &#39;mov&#39; has a size of 3q.
+    nop
+    nop
+    nop
+yeah:           # &#39;yeah&#39; equals to 0x6,
+                # because &#39;nop&#39; has a size of 1.
+</code></pre><p>Label definition examples:</p>
+<pre><code>kl34:   # This label is valid
+K_4_Z:  # This one too
+_mnp:   # Syntax error
+mnp_:   # Syntax error
+3go:    # Syntax error
+kl34:   # Syntax error: already defined
+</code></pre><h4 id="the-expressions">The Expressions</h4>
+<p>Each time an instruction requires a constant value, an expression can be used.
+They can contains constants values, labels and perform arithmetic operations
+with them.</p>
+<p>For example:</p>
+<pre><code>foo:
+    ll r0, foo - (1 + 2 * 4) / 8    # Works with simple operators
+    ll r0, foo ^ 2                  # Exponents also works
+    ll r0, bar ^ (foo - 0xa) / bar  # Messy, but ok
+bar:
+</code></pre><h4 id="the-guidelines">The Guidelines</h4>
+<p>A guideline is an additional information concerning the ship, they can be seen
+as &#39;meta-data&#39;. They can be used anywhere in the code even though it is usual
+to put them at the top of the assembly file. Using the same guildeline several
+times won&#39;t create errors, only the last one found will be used. A guildeline
+is case insensitive.</p>
+<p>The Pit recognise the folowing guildlines:</p>
+<h5 id="name">Name</h5>
+<p>Syntax: <code>.name &quot;Corewar 101&quot;</code>. Max length: 32 characters.</p>
+<p>Sets the name of the ship. This guildeline is mandatory for a ship. If the name
+is bigger than 32 characters it will be truncated and a warning will be
+produced.</p>
+<p>Examples:</p>
+<pre><code>.name &quot;Don&#39;t worry guys&quot;         # Single quotes are valid
+.name &quot;The name is \&quot;Awesome\&quot;&quot;  # Double quotes must be escaped
+.name &quot;The \\&quot;                   # Escape the backslash to display it
+</code></pre><h5 id="comment">Comment</h5>
+<p>Syntax: <code>.comment &quot;This ship is awesome&quot;</code>. Max length: 128 characters.</p>
+<p>Sets a comment for the ship. This guildeline is optional for a ship. If the
+comment is bigger than 128 characters it will be truncated and a warning will
+be produced.</p>
+<p>Examples:</p>
+<pre><code>.comment &quot;Don&#39;t worry guys&quot;         # Single quotes are valid
+.comment &quot;The name is \&quot;Awesome\&quot;&quot;  # Double quotes must be escaped
+.comment &quot;The \\&quot;                   # Escape the backslash to display it
+</code></pre><h2 id="encoding">Encoding</h2>
+<table>
+<thead>
+<tr>
+<th>Instruction</th>
+<th>q0</th>
+<th>q1</th>
+<th>q2</th>
+<th>q3</th>
+<th>q4</th>
+<th>q5</th>
+<th>q6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>crash</code></td>
+<td>0</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>nop</code></td>
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>and rx, ry</code></td>
+<td>2</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>or rx, ry</code></td>
+<td>3</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>xor rx, ry</code></td>
+<td>4</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>not rx, ry</code></td>
+<td>5</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>rol rx, n</code></td>
+<td>6</td>
+<td>rx</td>
+<td>n</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>asr rx, n</code></td>
+<td>7</td>
+<td>rx</td>
+<td>n</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>add rx, ry</code></td>
+<td>8</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>sub rx, ry</code></td>
+<td>9</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>cmp rx, ry</code></td>
+<td>a</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>neg rx, ry</code></td>
+<td>b</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>mov rx, ry</code></td>
+<td>c</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ldr rx, [ry]</code></td>
+<td>d</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>str [rx], ry</code></td>
+<td>e</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ldb [rx], n, m</code></td>
+<td>f</td>
+<td>0</td>
+<td>rx</td>
+<td>n0</td>
+<td>n1</td>
+<td>m0</td>
+<td>m1</td>
+</tr>
+<tr>
+<td><code>stb [rx], n, m</code></td>
+<td>f</td>
+<td>1</td>
+<td>rx</td>
+<td>n0</td>
+<td>n1</td>
+<td>m0</td>
+<td>m1</td>
+</tr>
+<tr>
+<td><code>lc rx, n</code></td>
+<td>f</td>
+<td>2</td>
+<td>rx</td>
+<td>n0</td>
+<td>n1</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ll rx, n</code></td>
+<td>f</td>
+<td>3</td>
+<td>rx</td>
+<td>n0</td>
+<td>n1</td>
+<td>n2</td>
+<td>n3</td>
+</tr>
+<tr>
+<td><code>swp rx, ry</code></td>
+<td>f</td>
+<td>4</td>
+<td>rx</td>
+<td>ry</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>addi rx, n</code></td>
+<td>f</td>
+<td>5</td>
+<td>rx</td>
+<td>n</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>cmpi rx, n</code></td>
+<td>f</td>
+<td>6</td>
+<td>rx</td>
+<td>n</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>b rx</code></td>
+<td>f</td>
+<td>7</td>
+<td>rx</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bz rx</code></td>
+<td>f</td>
+<td>8</td>
+<td>rx</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bnz rx</code></td>
+<td>f</td>
+<td>9</td>
+<td>rx</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bs rx</code></td>
+<td>f</td>
+<td>a</td>
+<td>rx</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>stat rx, n</code></td>
+<td>f</td>
+<td>b</td>
+<td>rx</td>
+<td>n</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>check</code></td>
+<td>f</td>
+<td>c</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>mode m</code></td>
+<td>f</td>
+<td>d</td>
+<td>m</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>fork</code></td>
+<td>f</td>
+<td>e</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>write rx</code></td>
+<td>f</td>
+<td>f</td>
+<td>rx</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
