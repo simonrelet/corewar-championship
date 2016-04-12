@@ -1,14 +1,17 @@
 {
   "name": "corewar-championship",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "The corewar championship",
   "main": "corewar-championship.js",
   "scripts": {
-    "clean": "rm -fr logs",
     "dist-clean": "npm run clean node_modules",
     "start": "mkdir -p logs && forever start -p logs/ -l forever.log -a -o logs/out.log -e logs/err.log corewar-championship.js",
     "stop": "forever stop corewar-championship.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp build",
+    "clean": "gulp clean",
+    "watch": "gulp watch",
+    "clean:dist": "gulp clean:dist"
   },
   "author": "Simon Relet",
   "license": "MIT",
@@ -16,6 +19,19 @@
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
     "jade": "^1.11.0",
-    "lodash": "^4.6.1"
+    "jstransformer-markdown": "^1.1.0"
+  },
+  "devDependencies": {
+    "del": "^2.2.0",
+    "fs-promise": "^0.5.0",
+    "gulp": "^3.9.1",
+    "gulp-data": "^1.2.1",
+    "gulp-jade": "^1.1.0",
+    "gulp-markdown": "^1.2.0",
+    "gulp-npm-script-sync": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^2.2.0",
+    "path": "^0.12.7",
+    "request-promise": "^2.0.1"
   }
 }

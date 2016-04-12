@@ -1,0 +1,30 @@
+.margin-block, .title {
+  margin: 1em 0 16px 0; }
+
+.margin-text, .markdown .layout {
+  margin: 0 0 16px 0; }
+
+.code-block {
+  background-color: #f5f5f5;
+  border-radius: 3px; }
+
+.title {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eee; }
+
+.markdown table {
+  width: 100%; }
+  .markdown table .cell, .markdown table td, .markdown table th {
+    padding: 2px 4px;
+    text-align: center; }
+  .markdown table th {
+    background-color: transparent; }
+  .markdown table th.instruction {
+    font-style: normal; }
+  .markdown table tr:nth-child(even) {
+    background-color: #f8f8f8; }
+  .markdown table tr:hover:not(.mode) {
+    background-color: #558b2f;
+    color: white; }
+    .markdown table tr:hover:not(.mode) code {
+      color: initial; }

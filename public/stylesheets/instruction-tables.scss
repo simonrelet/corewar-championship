@@ -1,0 +1,42 @@
+@import '_constants.scss';
+@import '_markdown.scss';
+
+.markdown {
+  .layout {
+    @extend .margin-text;
+  }
+  
+  table {
+    width: 100%;
+    
+    .cell {
+      padding: 2px 4px;
+      text-align: center;
+    }
+    
+    td {
+      @extend .cell;
+    }
+    
+    th {
+      @extend .cell;
+      background-color: transparent;
+    }
+    
+    th.instruction {
+      font-style: normal;
+    }
+    
+    tr:nth-child(even) {
+      background-color: $tabel-alt-row;
+    }
+    
+    tr:hover:not(.mode) {
+      background-color: $active-color;
+      color: white;
+      code {
+        color: initial;
+      }
+    }
+  }
+}

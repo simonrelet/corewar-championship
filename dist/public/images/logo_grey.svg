@@ -1,0 +1,16 @@
+
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35px" height="35px">
+  <g transform="translate(5, 5)">
+    <g fill="#ccc">
+      <rect x="-1" y="-1" height="7" width="17"></rect>
+      <rect x="-1" y="-1" height="27" width="7"></rect>
+      <rect x="-1" y="19" height="7" width="17"></rect>
+    </g>
+    <g fill="#aaa">
+      <rect x="9" y="9" height="10" width="7"></rect>
+      <polygon points="9,19 16,19 16,26"></polygon>
+      <rect x="16" y="19" height="7" width="10"></rect>
+      <rect x="19" y="-1" height="27" width="7"></rect>
+    </g>
+  </g>
+</svg>

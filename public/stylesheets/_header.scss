@@ -1,0 +1,37 @@
+@import '_constants.scss';
+
+#header {
+  background-color: $block-background;
+  border-bottom: $block-border;
+  height: 50px;
+}
+
+#header .content {
+  flex-direction: row;
+  padding: 0px;
+}
+
+#header .layout {
+  flex-grow: 1;
+}
+
+#header a,
+#header a:visited {
+  color: $header-link-color;
+  padding: 6px 12px;
+  font-size: small;
+  display: flex;
+  align-items: center;
+}
+
+#header a:hover {
+  color: $header-link-color-hover;
+  text-decoration: none;
+}
+
+#header a.active,
+#header a.active:hover {
+  color: $header-link-color-hover;
+  background-color: $header-link-background;
+  text-decoration: none;
+}

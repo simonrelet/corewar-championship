@@ -1,0 +1,28 @@
+extends ./layout
+
+block styles
+  link(href='/stylesheets/leaderboard.css', rel='stylesheet')
+
+block content
+  input#search(type='text', placeholder='Search', autofocus=true)
+  table#leaderboard
+    thead
+      tr.header
+        td.classment #
+        td.cycles Cycles
+        td.name Name
+        td.captain Captain
+        td.comment Comment
+    tbody#leaderboard-body
+      if scores.length
+       each score in scores
+         tr
+           td.classment= score.rank
+           td.cycles= score.cycles
+           td.name= score.name
+           td.captain= score.captain
+           td.comment= score.comment
+      else
+        tr.empty
+          td.empty(colspan='5') No scores :(
+       
