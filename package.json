@@ -1,6 +1,6 @@
 {
   "name": "corewar-championship",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "The corewar championship",
   "main": "corewar-championship.js",
   "scripts": {
