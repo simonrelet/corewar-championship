@@ -12,14 +12,16 @@ block content
         a(href=params.sibling.link) Go to #{params.sibling.name} delays
       .scrollable
         table
-          tr.mode
-            th.top-corner
-            each mode in params.instructions.modes
-              th.mode= mode
+          thead
+            tr.mode
+              th.top-corner
+              each mode in params.instructions.modes
+                th.mode= mode
 
-          each instruction in params.instructions.instructions
-            tr
-              th.instruction
-                code= instruction.name
-              each mode, index in params.instructions.modes
-                 td= instruction[params.current.name][index]
+          tbody
+            each instruction in params.instructions.instructions
+              tr
+                th.instruction
+                  code= instruction.name
+                each mode, index in params.instructions.modes
+                   td= instruction[params.current.name][index]

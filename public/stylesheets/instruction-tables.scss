@@ -20,23 +20,14 @@
     
     th {
       @extend .cell;
-      background-color: transparent;
     }
     
     th.instruction {
       font-style: normal;
     }
     
-    tr:nth-child(even) {
-      background-color: $tabel-alt-row;
-    }
-    
     tr:hover:not(.mode) {
-      background-color: $active-color;
-      color: white;
-      code {
-        color: initial;
-      }
+      background-color: $table-line-hover;
     }
   }
 }

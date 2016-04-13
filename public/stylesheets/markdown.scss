@@ -92,15 +92,16 @@
       @extend .cell;
       font-weight: normal;
       font-style: italic;
-      background-color: $tabel-header-row;
     }
     
     td {
       @extend .cell;
     }
     
-    tr:nth-child(even) {
-      background-color: $tabel-alt-row;
+    tbody {
+      tr:nth-child(odd) {
+        background-color: $tabel-alt-row;
+      }
     }
   }
 }
