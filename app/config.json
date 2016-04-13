@@ -1,0 +1,4 @@
+{
+  "port": 4200,
+  "leaderboardUrl": "http://localhost:4202/leaderboard"
+}
