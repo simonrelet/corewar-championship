@@ -1,7 +1,13 @@
 'use strict';
 
+const config = require('./config.json');
+const defaultConfig = {
+  port: 8080,
+  leaderboardUrl: 'http://localhost:4202/leaderboard'
+};
+
 module.exports = {
-  leaderboardUrl: 'http://localhost:4202/leaderboard',
+  config: Object.assign(defaultConfig, config),
   pages: {
     home: {
       name: 'Home',

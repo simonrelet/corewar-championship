@@ -18,7 +18,7 @@ let renderScores = res => {
 
 router.get('/', (req, res) => {
   let options = {
-    uri: constants.leaderboardUrl,
+    uri: constants.config.leaderboardUrl,
     json: true
   };
   rp(options)
