@@ -1,0 +1,15 @@
+extends ./_svg.jade
+
+block content
+  defs
+    filter(id='dropShadow', width='300%', height='300%')
+      feGaussianBlur(in='SourceAlpha', stdDeviation='1')
+      feMerge
+        feMergeNode
+        feMergeNode(in='SourceGraphic')
+  
+  rect(x='0', y='0', height='40', width='45', fill=color1)
+  rect(x='45', y='0', height='40', width='35', fill=color2)
+  polygon(points='10,-10 45,40 60,-10', fill=color3, filter='url(#dropShadow)')
+  polygon(points='-10,40 40,-10 20,-30 -30,20', fill=color4, filter='url(#dropShadow)')
+  polygon(points='50,50 85,0 85,50', fill=color5, filter='url(#dropShadow)')

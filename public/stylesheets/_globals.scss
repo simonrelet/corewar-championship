@@ -32,6 +32,24 @@ html {
     color: $active-color;
   }
   
+  #jumbotron {
+    display: flex;
+    align-items: stretch;
+    background-image: url('/images/background.svg');
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+    div {
+      flex-grow: 1;
+      padding: 50px;
+      font-size: $jumbotron-font-size;
+      font-weight: bold;
+      color: $jumbotron-color;
+      text-align: center;
+    }
+  }
+  
   a,
   a:visited {
     @extend .link;

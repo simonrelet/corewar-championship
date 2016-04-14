@@ -3,6 +3,10 @@ extends ./layout
 block styles
   link(href='/stylesheets/markdown.css', rel='stylesheet')
 
+block pre-content
+  #jumbotron
+    div Corewar
+
 block content
   .markdown
     include generated/home.html
